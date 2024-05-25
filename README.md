@@ -58,7 +58,14 @@ Electron starter kit with multiple features
 
 <br/>
 
-## Start develop
+## Getting started
+
+#### use template
+
+- Create a repository from this template or fork this repository
+- Create dev branch from main
+- Set secret from github repository settings (Settings > Secrets and variables > Actions > New repository secret)
+  - `PERSONAL_TOKEN`: Github personal access token (repo scope)
 
 #### dev mode
 
