@@ -1,3 +1,5 @@
+![image](https://github.com/2skydev/electron-nestjs-react-vite-template/assets/43225384/431d3d65-8292-4189-977a-f13bb3dedd5e)
+
 # electron + react + nestjs + vite template
 
 <br/>
