@@ -63,6 +63,11 @@ jobs:
         with:
           ref: main # ref를 main 설정하지 않으면 workflow가 트리거된 ref가 사용됨 (`Update package.json version` 단계의 커밋 반영을 위해 main으로 설정)
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9.1.2
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
