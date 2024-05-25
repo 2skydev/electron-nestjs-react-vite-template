@@ -31,6 +31,7 @@ module.exports = {
     '@typescript-eslint/no-var-requires': 'off',
     'prefer-const': 'off',
     'no-async-promise-executor': 'off',
+    'no-prototype-builtins': 'off',
   },
   overrides: [
     {

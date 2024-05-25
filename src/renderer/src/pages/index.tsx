@@ -1,9 +1,14 @@
+import '@renderer/assets/main.css'
+
 import Versions from '@renderer/components/Versions'
 import electronLogo from '@renderer/assets/electron.svg'
+import { Link } from 'react-router-dom'
 
 function HomePage(): JSX.Element {
   return (
     <>
+      <Link to="/about">About</Link>
+
       <img alt="logo" className="logo" src={electronLogo} />
       <div className="creator">Powered by electron-vite</div>
       <div className="text">

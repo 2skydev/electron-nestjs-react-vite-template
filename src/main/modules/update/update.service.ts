@@ -51,7 +51,7 @@ export class UpdateService implements OnModuleInit {
     this.controller = this.moduleRef.get(UpdateController)
   }
 
-  // 자동 업데이트 (src/main/index.ts에서 실행)
+  // execute by `src/main/index.ts`
   @ExecuteLog()
   async autoUpdate() {
     return new Promise<boolean>(async resolve => {
@@ -91,7 +91,7 @@ export class UpdateService implements OnModuleInit {
     this.updateLoadingWindow = new BrowserWindow({
       width: 300,
       height: 300,
-      backgroundColor: '#36393F',
+      backgroundColor: '#2F3242',
       darkTheme: true,
       show: false,
       autoHideMenuBar: true,
@@ -103,6 +103,10 @@ export class UpdateService implements OnModuleInit {
       },
     })
 
+    this.updateLoadingWindow.on('ready-to-show', () => {
+      this.updateLoadingWindow?.show()
+    })
+
     if (app.isPackaged) {
       await this.updateLoadingWindow.loadFile(this.electronService.PROD_LOAD_FILE_PATH, {
         hash: '#/windows/update-loading',
@@ -112,10 +116,6 @@ export class UpdateService implements OnModuleInit {
         this.electronService.DEV_URL + '#/windows/update-loading',
       )
     }
-
-    this.updateLoadingWindow.on('ready-to-show', () => {
-      this.updateLoadingWindow?.show()
-    })
   }
 
   private handleUpdateEvent(event: UpdateStatusEvent) {

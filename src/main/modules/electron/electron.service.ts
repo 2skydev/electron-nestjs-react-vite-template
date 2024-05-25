@@ -68,7 +68,7 @@ export class ElectronService implements OnModuleInit, OnApplicationBootstrap {
   // deep link handlers
   public deepLinkHandlers: Record<string, (params: object) => void> = {}
 
-  // update.module.ts -> autoUpdate() 참고
+  // update.module.ts -> autoUpdate()
   public isNeedUpdate = false
   public isNeedUpdateLater = false
 
@@ -233,7 +233,7 @@ export const generatedIpcOnContext = {`
     await writeFile(`src/preload/generated-ipc-on-context.ts`, `${importString}\n${contentString}`)
   }
 
-  // 앱 시작 (src/main/index.ts에서 실행)
+  // execute by `src/main/index.ts`
   @ExecuteLog()
   public async start() {
     console.log('start', !this.IS_HIDDEN_LAUNCH && !this.isNeedUpdate)
@@ -264,7 +264,7 @@ export const generatedIpcOnContext = {`
       this.window = new BrowserWindow({
         width: this.APP_WIDTH,
         height: this.APP_HEIGHT,
-        backgroundColor: '#36393F',
+        backgroundColor: '#2F3242',
         darkTheme: true,
         show: false,
         autoHideMenuBar: true,

@@ -17,7 +17,7 @@ export class ConfigService {
       oldValue: FieldPathValue<ConfigStoreValues, Key>,
     ) => void,
   ) {
-    // @ts-ignore: key 타입 무시
+    // @ts-ignore: ignore key type
     return this.store.onDidChange(key, callback)
   }
 
@@ -30,7 +30,7 @@ export class ConfigService {
   public get<Key extends FieldPath<ConfigStoreValues> = FieldPath<ConfigStoreValues>>(
     key: Key,
   ): FieldPathValue<ConfigStoreValues, Key> {
-    // @ts-ignore: key 타입 무시
+    // @ts-ignore: ignore key type
     return this.store.get(key)
   }
 
@@ -38,7 +38,7 @@ export class ConfigService {
     key: Key,
     value: FieldPathValue<ConfigStoreValues, Key>,
   ) {
-    // @ts-ignore: key 타입 무시
+    // @ts-ignore: ignore key type
     this.store.set(key, value)
   }
 

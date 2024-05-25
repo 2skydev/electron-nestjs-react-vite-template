@@ -10,7 +10,7 @@ interface Module {
 export interface ErrorFallbackProps {}
 
 const PRESERVED = import.meta.glob<Module>('/src/pages/(_app|_error).tsx', { eager: true })
-const ROUTES = import.meta.glob<Module>('/src/pages/**/[a-z[]*.tsx', { eager: true })
+const ROUTES = import.meta.glob<Module>('/src/pages/**/[a-z[]*.tsx')
 
 const preservedRoutes: Partial<Record<string, Element>> = Object.keys(PRESERVED).reduce(
   (routes, key) => {
@@ -26,13 +26,16 @@ const ErrorFallback = preservedRoutes?.['_error'] || Fragment
 const router = createHashRouter([
   {
     path: '/',
-    element: <App />,
-    errorElement: <ErrorFallback />,
+    Component: App,
+    ErrorBoundary: ErrorFallback,
     children: Object.keys(ROUTES).reduce<RouteObject[]>((routes, key) => {
       const module = ROUTES[key]
 
       const route: RouteObject = {
-        element: <module.default />,
+        lazy: async () => {
+          const { default: Component } = await module()
+          return { Component }
+        },
       }
 
       const segments = key

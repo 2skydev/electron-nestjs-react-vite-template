@@ -20,7 +20,7 @@ export class MigrationModule {
     let migratedVersions = migrationStore.get('migratedVersions')
     let executedMigrationVersions = migrationStore.get('executedMigrationVersions')
 
-    // 마이그레이션 스토어가 비어있는 경우
+    // If the migration store is empty
     if (!migratedVersions || !executedMigrationVersions) {
       migratedVersions = []
       executedMigrationVersions = []
@@ -32,27 +32,27 @@ export class MigrationModule {
       }
     }
 
-    // 선언된 모든 마이그레이션 불러오기
+    // Import all declared migrations
     const migrationVersions = Object.getOwnPropertyNames(this).filter(propertyName =>
       valid(propertyName),
     )
 
     if (isInitialInstallation) {
-      // 초기 설치라면 현재 모든 마이그레이션을 실행할 필요가 없으므로 실행된 것으로 간주
+      // If it's an initial installation, you don't need to run all current migrations, so consider it executed
       migrationStore.set('migratedVersions', migrationVersions)
     } else {
-      // 초기 설치가 아니라면 마이그레이션 실행
+      // Run migration unless it is an initial installation
       const executableMigrationVersions = migrationVersions.filter(version => {
         const isExecutable = !migratedVersions!.includes(version)
 
-        // 개발 모드라면 버전 비교 없이 실행
+        // Run without version comparison if in development mode
         if (!app.isPackaged) return isExecutable
 
-        // 프로덕션 모드라면 하위 및 같은 버전만 실행
+        // If it's production mode, run only the lower and the same versions
         return isExecutable && lte(version, currentVersion)
       })
 
-      // 실행 가능한 마이그레이션이 있다면 실행
+      // Run if there is a viable migration
       if (executableMigrationVersions.length) {
         for (const version of executableMigrationVersions) {
           try {
