@@ -76,7 +76,7 @@ jobs:
           echo "RENDERER_VITE_SENTRY_DSN=${{ vars.RENDERER_VITE_SENTRY_DSN }}" >> .env
 
       - name: Install dependencies
-        run: pnpm
+        run: pnpm i
 
       - name: Build
         run: pnpm build
