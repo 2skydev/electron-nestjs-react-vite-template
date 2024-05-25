@@ -4,9 +4,9 @@
 
 Electron starter kit with multiple features
 
-![스크린샷 2024-05-25 180904](https://github.com/2skydev/electron-nestjs-react-vite-template/assets/43225384/5b717dd7-24e1-4a86-8df7-b1d93a986d46)
+![image](https://github.com/2skydev/electron-nestjs-react-vite-template/assets/43225384/5b717dd7-24e1-4a86-8df7-b1d93a986d46)
 
-![스크린샷 2024-05-25 181018](https://github.com/2skydev/electron-nestjs-react-vite-template/assets/43225384/47cb748a-52de-4e93-89b1-90a92b455e24)
+![image](https://github.com/2skydev/electron-nestjs-react-vite-template/assets/43225384/47cb748a-52de-4e93-89b1-90a92b455e24)
 
 <br/>
 
@@ -71,3 +71,11 @@ pnpm dev
 ```bash
 pnpm build
 ```
+
+## known error
+
+- [%1 is not a valid Win32 application](https://github.com/pnpm/pnpm/issues/5638#issuecomment-1327988206)
+- Github Action
+  - Update package.json version
+    - `pathspec 'dev' did not match any file(s) known to git`
+      - DO: create `dev` branch from `main`
