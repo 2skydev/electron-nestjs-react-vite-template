@@ -11,7 +11,7 @@
     {
       "provider": "github",
       "owner": "2skydev",
-      "repo": "example"
+      "repo": "electron-nestjs-react-vite-template"
     }
   ],
   "asar": true,
