@@ -1,0 +1,11 @@
+target
+index.node
+**/node_modules
+**/.DS_Store
+yarn-debug.log*
+yarn-error.log*
+/resources/windows/chromium
+chrome_data
+out
+release
+.env

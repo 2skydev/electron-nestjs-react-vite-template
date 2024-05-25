@@ -1,0 +1,84 @@
+name: App build & release drafter
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**/README.md'
+
+permissions:
+  contents: read
+
+jobs:
+  release_draft:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Release drafter
+        uses: release-drafter/release-drafter@v5
+        with:
+          config-name: release-drafter-config.yml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Sleep 5 seconds # release-drafter가 release를 생성하기 전에 아래 단계를 실행하는 문제를 해결하기 위해 sleep
+        run: sleep 5
+
+      - name: Get latest release
+        id: get_latest_release
+        uses: pozetroninc/github-action-get-latest-release@master
+        with:
+          repository: ${{ github.repository }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Update package.json version
+        run: |
+          version=${{ steps.get_latest_release.outputs.release }}
+          version=${version#v}
+          echo "Latest release: $version"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          yarn version --new-version $version --no-git-tag-version
+          if ! git diff --exit-code; then
+            git add package.json
+            git commit -m "Update package.json version"
+            git checkout dev
+            git merge main
+            git push --all
+          fi
+
+  build_release:
+    runs-on: windows-latest
+    needs: release_draft
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: main # ref를 main 설정하지 않으면 workflow가 트리거된 ref가 사용됨 (`Update package.json version` 단계의 커밋 반영을 위해 main으로 설정)
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'yarn'
+
+      - name: Generate environment variables file
+        run: |
+          echo "SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}" >> .env
+          echo "MAIN_VITE_SENTRY_DSN=${{ vars.MAIN_VITE_SENTRY_DSN }}" >> .env
+          echo "RENDERER_VITE_SENTRY_DSN=${{ vars.RENDERER_VITE_SENTRY_DSN }}" >> .env
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Build
+        run: yarn build
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_TOKEN }} # electron-builder은 자동 인증 토큰을 지원하지 않음

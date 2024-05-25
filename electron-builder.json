@@ -1,0 +1,40 @@
+{
+  "appId": "com.2skydev.example",
+  "productName": "electron-nestjs-react-vite-template",
+  "protocols": {
+    "name": "example",
+    "schemes": [
+      "example"
+    ]
+  },
+  "publish": [
+    {
+      "provider": "github",
+      "owner": "2skydev",
+      "repo": "example"
+    }
+  ],
+  "asar": true,
+  "win": {
+    "target": "nsis",
+    "icon": "resources/icons/logo@256.ico"
+  },
+  "mac": {
+    "target": "dmg",
+    "icon": "resources/icons/logo@512.png"
+  },
+  "nsis": {
+    "oneClick": true,
+    "artifactName": "${productName}-${version}.${ext}",
+    "uninstallDisplayName": "${productName}"
+  },
+  "extraResources": [
+    "./resources/**"
+  ],
+  "directories": {
+    "output": "release/"
+  },
+  "files": [
+    "out/**/*"
+  ]
+}

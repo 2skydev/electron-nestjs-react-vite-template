@@ -1,0 +1,34 @@
+{
+  "extends": "./tsconfig.base.json",
+  "include": [
+    "src/renderer/src/env.d.ts",
+    "src/renderer/src/**/*",
+    "src/renderer/src/**/*.tsx",
+    "src/main/**/*"
+  ],
+  "compilerOptions": {
+    "composite": true,
+    "baseUrl": ".",
+    "jsx": "react-jsx",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "strictPropertyInitialization": false,
+    "lib": [
+      "ESNext",
+      "DOM",
+      "DOM.Iterable"
+    ],
+    "types": [
+      "vite/client",
+      "./src/preload/electron"
+    ],
+    "paths": {
+      "@renderer/*": [
+        "src/renderer/src/*"
+      ],
+      "@main/*": [
+        "src/main/*"
+      ]
+    }
+  }
+}

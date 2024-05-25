@@ -1,0 +1,31 @@
+name-template: 'v$RESOLVED_VERSION 🌈'
+
+tag-template: 'v$RESOLVED_VERSION'
+
+categories:
+  - title: '🚀 새로운 기능'
+    labels:
+      - 'enhancement'
+      - 'feature'
+  - title: '🐛 버그 수정'
+    labels: 'bug'
+  - title: '🧰 유지 보수'
+    label: 'chore'
+
+version-resolver:
+  major:
+    labels:
+      - 'major'
+  minor:
+    labels:
+      - 'minor'
+  patch:
+    labels:
+      - 'patch'
+  default: patch
+
+change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
+change-title-escapes: '\<*_&'
+
+template: |
+  $CHANGES
