@@ -1,3 +1,5 @@
+import { app } from 'electron'
+
 import { Injectable } from '@nestjs/common'
 import i18next from 'i18next'
 
@@ -7,7 +9,6 @@ import { IPCSender } from '@main/modules/electron/decorators/ipc-sender.decorato
 import { ELECTRON_MAIN_WINDOW_KEY } from '@main/modules/electron/electron.constants'
 import { ElectronService } from '@main/modules/electron/electron.service'
 import type { AppControlAction } from '@main/modules/electron/types/app-control.type'
-import { app } from 'electron'
 
 @Injectable()
 export class ElectronController {

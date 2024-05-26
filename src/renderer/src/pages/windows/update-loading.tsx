@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import '@renderer/assets/update-loading.css'
-import logoImage from '@renderer/assets/electron.svg'
+
 import useSWR from 'swr'
+
+import logoImage from '@renderer/assets/electron.svg'
+import '@renderer/assets/update-loading.css'
 
 const UpdateLoadingPage = () => {
   const { t } = useTranslation('translation', {

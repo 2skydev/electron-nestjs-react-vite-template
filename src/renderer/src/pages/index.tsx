@@ -1,8 +1,8 @@
-import '@renderer/assets/main.css'
-
-import Versions from '@renderer/components/Versions'
-import electronLogo from '@renderer/assets/electron.svg'
 import { Link } from 'react-router-dom'
+
+import electronLogo from '@renderer/assets/electron.svg'
+import '@renderer/assets/main.css'
+import Versions from '@renderer/components/Versions'
 
 function HomePage(): JSX.Element {
   return (

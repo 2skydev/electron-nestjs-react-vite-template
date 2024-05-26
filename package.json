@@ -15,7 +15,7 @@
     "typecheck:web": "tsc --noEmit -p tsconfig.web.json --composite false",
     "typecheck": "pnpm typecheck:node && pnpm typecheck:web",
     "postinstall": "electron-builder install-app-deps",
-    "format": "prettier --write .",
+    "format": "prettier --write ./src",
     "g": "node generator.mjs"
   },
   "dependencies": {
