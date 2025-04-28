@@ -12,7 +12,6 @@ import {
 import { Injectable, OnApplicationBootstrap, OnModuleInit } from '@nestjs/common'
 import { ModuleRef } from '@nestjs/core'
 import AutoLaunch from 'auto-launch'
-import { paramCase } from 'change-case'
 import { writeFile, readdir, readFile } from 'fs/promises'
 import i18next from 'i18next'
 import { parse as jsoncParse } from 'jsonc-parser'
@@ -35,6 +34,7 @@ import { ElectronController } from '@main/modules/electron/electron.controller'
 import { electronStore } from '@main/modules/electron/electron.store'
 import { AppControlAction } from '@main/modules/electron/types/app-control.type'
 import { LanguageOption } from '@main/modules/electron/types/language.type'
+import { pascalToKebab } from '@main/utils/change-case.utils'
 
 @Injectable()
 export class ElectronService implements OnModuleInit, OnApplicationBootstrap {
@@ -172,7 +172,7 @@ export class ElectronService implements OnModuleInit, OnApplicationBootstrap {
     let contentString = `export const generatedIpcInvokeContext = {`
 
     Object.entries(groups).forEach(([controllerName, handlers]) => {
-      const controllerFilename = paramCase(controllerName.replace('Controller', ''))
+      const controllerFilename = pascalToKebab(controllerName.replace('Controller', ''))
 
       importString += `import { ${controllerName} } from '@main/modules/${controllerFilename}/${controllerFilename}.controller';\n`
 
@@ -209,7 +209,7 @@ export class ElectronService implements OnModuleInit, OnApplicationBootstrap {
 export const generatedIpcOnContext = {`
 
     Object.entries(groups).forEach(([controllerName, handlers]) => {
-      const controllerFilename = paramCase(controllerName.replace('Controller', ''))
+      const controllerFilename = pascalToKebab(controllerName.replace('Controller', ''))
 
       importString += `import { ${controllerName} } from '@main/modules/${controllerFilename}/${controllerFilename}.controller';\n`
 

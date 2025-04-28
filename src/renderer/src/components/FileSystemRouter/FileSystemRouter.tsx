@@ -1,7 +1,7 @@
 import { Fragment } from 'react'
 import { RouteObject, RouterProvider, createHashRouter } from 'react-router-dom'
 
-type Element = () => JSX.Element
+type Element = () => React.JSX.Element
 
 interface Module {
   default: Element
