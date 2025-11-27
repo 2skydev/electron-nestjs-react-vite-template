@@ -64,13 +64,13 @@
           "level": "on",
           "options": {
             "groups": [
-              "react",
+              ["react", "react-router-dom"],
               ":BLANK_LINE:",
-              ":PACKAGE:",
+              [":PACKAGE:", "!@main/**/*", "!@renderer/**/*", ":NODE:"],
               ":BLANK_LINE:",
-              "@main/*",
+              "@main/**/*",
               ":BLANK_LINE:",
-              "@renderer/*"
+              "@renderer/**/*"
             ]
           }
         }

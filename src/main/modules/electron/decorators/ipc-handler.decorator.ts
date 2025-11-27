@@ -21,7 +21,7 @@ export const IPCHandlerMap = new Map<string, IPCHandlerMetadata>()
  * 메인 프로세스에서 메소드에 데코레이터를 붙이면 렌더러에서 해당 메소드를 호출할 수 있습니다.
  */
 export function IPCHandler(options: IPCHandlerOptions = {}) {
-  return function (target: any, key: string, descriptor: PropertyDescriptor) {
+  return function ipcHandlerDecorator(target: any, key: string, descriptor: PropertyDescriptor) {
     const { channel = key, type = 'handle' } = options
 
     IPCHandlerMap.set(channel, {

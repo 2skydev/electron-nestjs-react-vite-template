@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import { useTranslation } from 'react-i18next'
 
+import { useTranslation } from 'react-i18next'
 import useSWR from 'swr'
 
 import logoImage from '@renderer/assets/electron.svg'

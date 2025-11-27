@@ -9,7 +9,7 @@ const yellow = (text: string) => `\x1B[38;5;3m${text}\x1B[39m`
 export function ExecuteLog(options: ExecuteLogOptions = {}) {
   const { startLog } = options
 
-  return function (target: any, key: string, descriptor: PropertyDescriptor) {
+  return function executeLogDecorator(target: any, key: string, descriptor: PropertyDescriptor) {
     const originalMethod = descriptor.value
 
     descriptor.value = async function (...args: any[]) {

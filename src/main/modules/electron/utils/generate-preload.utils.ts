@@ -2,11 +2,11 @@ import { groupBy } from 'es-toolkit'
 
 import {
   IPCHandlerMap,
-  IPCHandlerMetadata,
+  type IPCHandlerMetadata,
 } from '@main/modules/electron/decorators/ipc-handler.decorator'
 import {
   IPCSenderMap,
-  IPCSenderMetadata,
+  type IPCSenderMetadata,
 } from '@main/modules/electron/decorators/ipc-sender.decorator'
 
 const pascalToKebab = (input: string): string => {

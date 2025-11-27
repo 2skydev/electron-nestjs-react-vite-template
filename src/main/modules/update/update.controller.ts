@@ -5,7 +5,7 @@ import { IPCSender } from '@main/modules/electron/decorators/ipc-sender.decorato
 import { ELECTRON_MAIN_WINDOW_KEY } from '@main/modules/electron/electron.constants'
 import type { UpdateStatus } from '@main/modules/update/types/update-status.type'
 import { UPDATE_LOADING_WINDOW_KEY } from '@main/modules/update/update.constants'
-import { UpdateService } from '@main/modules/update/update.service'
+import type { UpdateService } from '@main/modules/update/update.service'
 
 @Injectable()
 export class UpdateController {

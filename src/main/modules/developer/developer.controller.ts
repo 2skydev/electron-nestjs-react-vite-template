@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 
-import { DeveloperService } from '@main/modules/developer/developer.service'
+import type { DeveloperService } from '@main/modules/developer/developer.service'
 import { IPCHandler } from '@main/modules/electron/decorators/ipc-handler.decorator'
 
 @Injectable()

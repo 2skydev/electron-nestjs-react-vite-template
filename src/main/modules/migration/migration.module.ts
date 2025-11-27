@@ -1,13 +1,13 @@
+import { Module } from '@nestjs/common'
 import { app } from 'electron'
 import log from 'electron-log'
-
-import { Module } from '@nestjs/common'
-import { omit } from 'lodash'
+import { omit } from 'es-toolkit'
 import { lte, valid } from 'semver'
 
 import { migrationStore } from '@main/modules/migration/migration.store'
 
 @Module({})
+// biome-ignore lint/complexity/noStaticOnlyClass: nestjs module
 export class MigrationModule {
   public static async forRootAsync() {
     const currentVersion = `v${app.getVersion()}`
@@ -33,7 +33,7 @@ export class MigrationModule {
     }
 
     // Import all declared migrations
-    const migrationVersions = Object.getOwnPropertyNames(this).filter(propertyName =>
+    const migrationVersions = Object.getOwnPropertyNames(MigrationModule).filter(propertyName =>
       valid(propertyName),
     )
 
@@ -56,7 +56,7 @@ export class MigrationModule {
       if (executableMigrationVersions.length) {
         for (const version of executableMigrationVersions) {
           try {
-            await this[version]()
+            await MigrationModule[version]()
             log.info(`[Migration Module] Migrated to ${version}`)
           } catch (error) {
             log.error(`[Migration Module] ${version}\n`, error)

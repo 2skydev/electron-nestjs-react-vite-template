@@ -7,7 +7,7 @@ export interface DeepLinkHandlerMetadata {
 export const DeepLinkHandlerMap = new Map<string, DeepLinkHandlerMetadata>()
 
 export function DeepLinkHandler(path: string) {
-  return function (target: any, _, descriptor: PropertyDescriptor) {
+  return function deepLinkHandlerDecorator(target: any, _, descriptor: PropertyDescriptor) {
     DeepLinkHandlerMap.set(path, { path, handler: descriptor.value, target: target.constructor })
   }
 }

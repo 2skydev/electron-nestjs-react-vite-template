@@ -1,4 +1,4 @@
-import { UpdaterEvents } from 'electron-updater'
+import type { UpdaterEvents } from 'electron-updater'
 
 export type UpdateStatusEvent = Omit<UpdaterEvents, 'login'>
 

@@ -1,13 +1,12 @@
-import { app } from 'electron'
-
 import { Injectable } from '@nestjs/common'
+import { app } from 'electron'
 import i18next from 'i18next'
 
 import type { ConfigStoreValues } from '@main/modules/config/config.store'
 import { IPCHandler } from '@main/modules/electron/decorators/ipc-handler.decorator'
 import { IPCSender } from '@main/modules/electron/decorators/ipc-sender.decorator'
 import { ELECTRON_MAIN_WINDOW_KEY } from '@main/modules/electron/electron.constants'
-import { ElectronService } from '@main/modules/electron/electron.service'
+import type { ElectronService } from '@main/modules/electron/electron.service'
 import type { AppControlAction } from '@main/modules/electron/types/app-control.type'
 
 @Injectable()
