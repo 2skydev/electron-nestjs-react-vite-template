@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import log from 'electron-log'
 
-import type { ConfigService } from '@main/modules/config/config.service'
+import { ConfigService } from '@main/modules/config/config.service'
 import type { Log } from '@main/modules/developer/types/log.type'
 
 @Injectable()

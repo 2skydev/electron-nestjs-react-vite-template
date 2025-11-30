@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 
-import type { ConfigService } from '@main/modules/config/config.service'
+import { ConfigService } from '@main/modules/config/config.service'
 import type { ConfigStoreValues } from '@main/modules/config/config.store'
 import { IPCHandler } from '@main/modules/electron/decorators/ipc-handler.decorator'
 

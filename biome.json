@@ -1,8 +1,20 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.3.6/schema.json",
   "files": {
-    "includes": ["src/**/*", "!src/**/generated-*"]
+    "includes": ["src/**/*", "electron.vite.config.ts"]
   },
+  "overrides": [
+    {
+      "includes": ["src/main/**/*.ts"],
+      "linter": {
+        "rules": {
+          "style": {
+            "useImportType": "off"
+          }
+        }
+      }
+    }
+  ],
   "formatter": {
     "enabled": true,
     "indentStyle": "space",

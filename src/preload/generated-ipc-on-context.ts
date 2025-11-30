@@ -1,20 +1,13 @@
 import { ipcRenderer } from 'electron'
-
 import type { ElectronController } from '@main/modules/electron/electron.controller'
 import type { UpdateController } from '@main/modules/update/update.controller'
 
 // prettier-ignore
-type Methods =
-  Pick<
-    ElectronController,
-    | 'onNeedUpdateLater'
-    | 'onChangeConfigValue'
-    | 'onChangeLanguage'
-  > &
-  Pick<
-    UpdateController,
-    | 'onChangeUpdateStatus'
-  >
+type Methods = Pick<
+  ElectronController,
+  'onNeedUpdateLater' | 'onChangeConfigValue' | 'onChangeLanguage'
+> &
+  Pick<UpdateController, 'onChangeUpdateStatus'>
 
 const channelNames = [
   'onNeedUpdateLater',

@@ -1,7 +1,7 @@
 import { readdir, readFile, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 import { Injectable, type OnApplicationBootstrap, type OnModuleInit } from '@nestjs/common'
-import type { ModuleRef } from '@nestjs/core'
+import { ModuleRef } from '@nestjs/core'
 import AutoLaunch from 'auto-launch'
 import {
   app,
@@ -19,7 +19,7 @@ import { match } from 'path-to-regexp'
 
 import { productName, protocols } from '@main/../../electron-builder.json'
 import { ExecuteLog } from '@main/decorators/execute-log.decorator'
-import type { ConfigService } from '@main/modules/config/config.service'
+import { ConfigService } from '@main/modules/config/config.service'
 import { AppWindow, AppWindowMap } from '@main/modules/electron/decorators/app-window.decorator'
 import { DeepLinkHandlerMap } from '@main/modules/electron/decorators/deep-link-handler.decorator'
 import { IPCHandlerMap } from '@main/modules/electron/decorators/ipc-handler.decorator'
@@ -173,7 +173,7 @@ export class ElectronService implements OnModuleInit, OnApplicationBootstrap {
     const text = generateIPCInvokeContextPreloadFileText()
 
     await writeFile(path, text)
-    await execPromise(`pnpm exec prettier --write ${path}`)
+    await execPromise(`pnpm exec biome check --write ${path}`)
   }
 
   public async generateIpcOnContextPreloadFile() {
@@ -183,7 +183,7 @@ export class ElectronService implements OnModuleInit, OnApplicationBootstrap {
     const text = generateIPCOnContextPreloadFileText()
 
     await writeFile(path, text)
-    await execPromise(`pnpm exec prettier --write ${path}`)
+    await execPromise(`pnpm exec biome check --write ${path}`)
   }
 
   // execute by `src/main/index.ts`
