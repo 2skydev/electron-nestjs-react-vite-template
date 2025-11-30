@@ -1,6 +1,6 @@
 {
   "name": "electron-nestjs-react-vite-template",
-  "version": "0.1.2",
+  "version": "1.0.0",
   "description": "electron + react + nestjs + vite template",
   "main": "./out/main/index.js",
   "license": "MIT",
@@ -36,6 +36,7 @@
   "devDependencies": {
     "@biomejs/biome": "2.3.6",
     "@swc/core": "^1.11.22",
+    "@tailwindcss/vite": "^4.1.17",
     "@types/auto-launch": "^5.0.5",
     "@types/node": "^22.15.2",
     "@types/react": "^19.1.2",
@@ -51,6 +52,7 @@
     "react-i18next": "^15.5.1",
     "react-router-dom": "^7.5.2",
     "swr": "^2.3.3",
+    "tailwindcss": "^4.1.17",
     "type-fest": "^4.40.1",
     "typescript": "^5.8.3",
     "vite": "^6.3.3"
