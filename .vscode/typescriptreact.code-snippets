@@ -1,0 +1,17 @@
+{
+  "React component & Type": {
+    "scope": "typescriptreact",
+    "prefix": ["qwe"],
+    "body": [
+      "interface Props {}\n",
+      "const ${TM_FILENAME_BASE} = (props: Props) => {",
+      "  return (",
+      "    <div>",
+      "      $0",
+      "    </div>",
+      "  )",
+      "}\n",
+      "export default ${TM_FILENAME_BASE}\n"
+    ]
+  }
+}

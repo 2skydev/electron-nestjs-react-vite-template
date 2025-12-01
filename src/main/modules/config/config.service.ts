@@ -1,6 +1,5 @@
-import { FieldPath, FieldPathValue } from 'react-hook-form'
-
 import { Injectable } from '@nestjs/common'
+import type { FieldPath, FieldPathValue } from 'react-hook-form'
 
 import type { ConfigStoreValues } from '@main/modules/config/config.store'
 import { configStore } from '@main/modules/config/config.store'
@@ -17,7 +16,7 @@ export class ConfigService {
       oldValue: FieldPathValue<ConfigStoreValues, Key>,
     ) => void,
   ) {
-    // @ts-ignore: ignore key type
+    // @ts-expect-error: ignore key type
     return this.store.onDidChange(key, callback)
   }
 
@@ -30,7 +29,7 @@ export class ConfigService {
   public get<Key extends FieldPath<ConfigStoreValues> = FieldPath<ConfigStoreValues>>(
     key: Key,
   ): FieldPathValue<ConfigStoreValues, Key> {
-    // @ts-ignore: ignore key type
+    // @ts-expect-error: ignore key type
     return this.store.get(key)
   }
 
@@ -38,7 +37,6 @@ export class ConfigService {
     key: Key,
     value: FieldPathValue<ConfigStoreValues, Key>,
   ) {
-    // @ts-ignore: ignore key type
     this.store.set(key, value)
   }
 
@@ -47,6 +45,7 @@ export class ConfigService {
   }
 
   public setAll(config: ConfigStoreValues) {
-    return (this.store.store = config)
+    this.store.store = config
+    return this.store.store
   }
 }

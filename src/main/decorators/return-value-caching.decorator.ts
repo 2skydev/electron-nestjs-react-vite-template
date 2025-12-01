@@ -1,8 +1,12 @@
 const CACHE_MAP_PROPERTY_NAME = '_returnValueCachingMap'
 
 export function ReturnValueCaching() {
-  return function (target: any, key: string, descriptor: PropertyDescriptor) {
-    if (!target.hasOwnProperty(CACHE_MAP_PROPERTY_NAME)) {
+  return function returnValueCachingDecorator(
+    target: any,
+    key: string,
+    descriptor: PropertyDescriptor,
+  ) {
+    if (!Object.hasOwn(target, CACHE_MAP_PROPERTY_NAME)) {
       target[CACHE_MAP_PROPERTY_NAME] = new Map<string, any>()
     }
 

@@ -1,0 +1,92 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.3.8/schema.json",
+  "files": {
+    "includes": ["src/**/*", "!src/preload/generated-*", "electron.vite.config.ts"]
+  },
+  "overrides": [
+    {
+      "includes": ["src/main/**/*.ts"],
+      "linter": {
+        "rules": {
+          "style": {
+            "useImportType": "off"
+          }
+        }
+      }
+    }
+  ],
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "lineWidth": 100
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "style": {
+        "noNonNullAssertion": "off",
+        "noDescendingSpecificity": "off"
+      },
+      "a11y": {
+        "useKeyWithClickEvents": "off",
+        "noStaticElementInteractions": "off",
+        "noLabelWithoutControl": "off",
+        "noSvgWithoutTitle": "off",
+        "useSemanticElements": "off",
+        "useFocusableInteractive": "off",
+        "useValidAnchor": "off"
+      },
+      "correctness": {
+        "useExhaustiveDependencies": "off",
+        "noUnusedImports": "error",
+        "noInvalidPositionAtImportRule": "off"
+      },
+      "suspicious": {
+        "noArrayIndexKey": "off",
+        "noExplicitAny": "off",
+        "noUnknownAtRules": "off"
+      },
+      "complexity": {
+        "noImportantStyles": "off",
+        "noUselessFragments": "warn"
+      }
+    }
+  },
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
+    },
+    "formatter": {
+      "quoteStyle": "single"
+    }
+  },
+  "javascript": {
+    "formatter": {
+      "arrowParentheses": "asNeeded",
+      "quoteStyle": "single",
+      "semicolons": "asNeeded"
+    }
+  },
+  "assist": {
+    "enabled": true,
+    "actions": {
+      "source": {
+        "organizeImports": {
+          "level": "on",
+          "options": {
+            "groups": [
+              ["react", "react-router-dom"],
+              ":BLANK_LINE:",
+              [":PACKAGE:", "!@main/**/*", "!@renderer/**/*", ":NODE:"],
+              ":BLANK_LINE:",
+              "@main/**/*",
+              ":BLANK_LINE:",
+              "@renderer/**/*"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

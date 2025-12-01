@@ -1,31 +1,28 @@
+import { readdir, readFile, writeFile } from 'node:fs/promises'
+import { join } from 'node:path'
+import { Injectable, type OnApplicationBootstrap, type OnModuleInit } from '@nestjs/common'
+import { ModuleRef } from '@nestjs/core'
+import AutoLaunch from 'auto-launch'
 import {
   app,
   BrowserWindow,
   ipcMain,
   Menu,
-  MenuItemConstructorOptions,
+  type MenuItemConstructorOptions,
   nativeImage,
   shell,
   Tray,
 } from 'electron'
-
-import { Injectable, OnApplicationBootstrap, OnModuleInit } from '@nestjs/common'
-import { ModuleRef } from '@nestjs/core'
-import AutoLaunch from 'auto-launch'
-import { paramCase } from 'change-case'
-import { writeFile, readdir, readFile } from 'fs/promises'
 import i18next from 'i18next'
 import { parse as jsoncParse } from 'jsonc-parser'
-import { groupBy } from 'lodash'
-import { join } from 'path'
 import { match } from 'path-to-regexp'
 
 import { productName, protocols } from '@main/../../electron-builder.json'
 import { ExecuteLog } from '@main/decorators/execute-log.decorator'
 import { ConfigService } from '@main/modules/config/config.service'
 import { AppWindow, AppWindowMap } from '@main/modules/electron/decorators/app-window.decorator'
-import { DeepLinkHandleMap } from '@main/modules/electron/decorators/deep-link-handle.decorator'
-import { IPCHandleMap } from '@main/modules/electron/decorators/ipc-handle.decorator'
+import { DeepLinkHandlerMap } from '@main/modules/electron/decorators/deep-link-handler.decorator'
+import { IPCHandlerMap } from '@main/modules/electron/decorators/ipc-handler.decorator'
 import { IPCSenderMap } from '@main/modules/electron/decorators/ipc-sender.decorator'
 import {
   ELECTRON_MAIN_WINDOW_KEY,
@@ -33,8 +30,12 @@ import {
 } from '@main/modules/electron/electron.constants'
 import { ElectronController } from '@main/modules/electron/electron.controller'
 import { electronStore } from '@main/modules/electron/electron.store'
-import { AppControlAction } from '@main/modules/electron/types/app-control.type'
-import { LanguageOption } from '@main/modules/electron/types/language.type'
+import type { AppControlAction } from '@main/modules/electron/types/app-control.type'
+import type { LanguageOption } from '@main/modules/electron/types/language.type'
+import {
+  generateIPCInvokeContextPreloadFileText,
+  generateIPCOnContextPreloadFileText,
+} from '@main/modules/electron/utils/generate-preload.utils'
 
 @Injectable()
 export class ElectronService implements OnModuleInit, OnApplicationBootstrap {
@@ -43,7 +44,7 @@ export class ElectronService implements OnModuleInit, OnApplicationBootstrap {
   public readonly APP_PATH = app.getAppPath()
   public readonly PROTOCOL = protocols.name
   public readonly IS_MAC = process.platform === 'darwin'
-  public readonly DEV_URL = process.env['ELECTRON_RENDERER_URL']
+  public readonly DEV_URL = process.env.ELECTRON_RENDERER_URL
   public readonly PROD_LOAD_FILE_PATH = join(this.APP_PATH, 'out/renderer/index.html')
   public readonly PRELOAD_PATH = join(this.APP_PATH, 'out/preload/index.js')
   public readonly RESOURCES_PATH = app.isPackaged
@@ -54,8 +55,8 @@ export class ElectronService implements OnModuleInit, OnApplicationBootstrap {
   )
   public readonly IS_HIDDEN_LAUNCH = process.argv.includes('--hidden')
 
-  public readonly APP_WIDTH = 1800
-  public readonly APP_HEIGHT = 1000
+  public readonly APP_WIDTH = 800
+  public readonly APP_HEIGHT = 600
 
   public readonly ZOOM_PERCENT_ARRAY = ZOOM_PERCENT_ARRAY
 
@@ -120,14 +121,15 @@ export class ElectronService implements OnModuleInit, OnApplicationBootstrap {
 
   @ExecuteLog()
   public async onApplicationBootstrap() {
-    IPCHandleMap.forEach(({ channel, type, handler, target }) => {
-      const instance = this.moduleRef.get(target, { strict: false })
-      ipcMain[type](channel, (_, ...args) => handler.apply(instance, args))
-    })
-
-    DeepLinkHandleMap.forEach(({ path, handler, target }) => {
+    DeepLinkHandlerMap.forEach(({ path, handler, target }) => {
       const instance = this.moduleRef.get(target, { strict: false })
       this.deepLinkHandlers[path] = handler.bind(instance)
+    })
+
+    IPCHandlerMap.forEach(({ channel, type, handler, target }) => {
+      const instance = this.moduleRef.get(target, { strict: false })
+
+      ipcMain[type](channel, (_, ...args) => handler.apply(instance, args))
     })
 
     IPCSenderMap.forEach(({ channel, windowKeys, handler, target }) => {
@@ -148,7 +150,7 @@ export class ElectronService implements OnModuleInit, OnApplicationBootstrap {
 
       const originalHandler = handler
 
-      const newHandler = function (...args: any[]) {
+      const newHandler = function ipcSenderHandler(...args: any[]) {
         const result = originalHandler.apply(instance, args)
 
         windows.forEach(({ propertyName, instance }) => {
@@ -166,77 +168,24 @@ export class ElectronService implements OnModuleInit, OnApplicationBootstrap {
   public async generateIpcInvokeContextPreloadFile() {
     if (app.isPackaged) return
 
-    const groups = groupBy([...IPCHandleMap.values()], 'target.name')
+    const path = 'src/preload/generated-ipc-invoke-context.ts'
+    const text = generateIPCInvokeContextPreloadFileText()
 
-    let importString = `import { ipcRenderer } from 'electron';\n\n`
-    let contentString = `export const generatedIpcInvokeContext = {`
-
-    Object.entries(groups).forEach(([controllerName, handlers]) => {
-      const controllerFilename = paramCase(controllerName.replace('Controller', ''))
-
-      importString += `import { ${controllerName} } from '@main/modules/${controllerFilename}/${controllerFilename}.controller';\n`
-
-      contentString += `\n  // ${controllerName}\n`
-
-      handlers.forEach(item => {
-        const type = item.type === 'on' || item.type === 'once' ? 'send' : 'invoke'
-        const handlerType = `typeof ${controllerName}.prototype.${item.handler.name}`
-        const asyncString = type === 'invoke' ? 'async ' : ''
-        const args = `...args: Parameters<${handlerType}>`
-        const returnType = type === 'invoke' ? `Promise<ReturnType<${handlerType}>>` : 'void'
-        const fn = `ipcRenderer.${type}('${item.channel}', ...args)`
-
-        contentString += `  ${item.handler.name}: ${asyncString}(${args}): ${returnType} => ${fn},\n`
-      })
-    })
-
-    contentString += `};\n`
-
-    await writeFile(
-      `src/preload/generated-ipc-invoke-context.ts`,
-      `${importString}\n${contentString}`,
-    )
+    await writeFile(path, text)
   }
 
   public async generateIpcOnContextPreloadFile() {
     if (app.isPackaged) return
 
-    const groups = groupBy([...IPCSenderMap.values()], 'target.name')
+    const path = 'src/preload/generated-ipc-on-context.ts'
+    const text = generateIPCOnContextPreloadFileText()
 
-    let importString = `import { ipcRenderer } from 'electron';\n\n`
-    let contentString = `type Unsubscribe = () => void
-
-export const generatedIpcOnContext = {`
-
-    Object.entries(groups).forEach(([controllerName, handlers]) => {
-      const controllerFilename = paramCase(controllerName.replace('Controller', ''))
-
-      importString += `import { ${controllerName} } from '@main/modules/${controllerFilename}/${controllerFilename}.controller';\n`
-
-      contentString += `\n  // ${controllerName}\n`
-
-      handlers.forEach(item => {
-        const handlerType = `typeof ${controllerName}.prototype.${item.handler.name}`
-        const callback = `callback: (data: ReturnType<${handlerType}>) => void`
-        const fn = `{
-    const handler = (_, data) => callback(data)
-    ipcRenderer.on('${item.channel}', handler)
-    return () => ipcRenderer.off('${item.channel}', handler)
-  }`
-
-        contentString += `  ${item.handler.name}: (${callback}): Unsubscribe => ${fn},\n`
-      })
-    })
-
-    contentString += `};\n`
-
-    await writeFile(`src/preload/generated-ipc-on-context.ts`, `${importString}\n${contentString}`)
+    await writeFile(path, text)
   }
 
   // execute by `src/main/index.ts`
   @ExecuteLog()
   public async start() {
-    console.log('start', !this.IS_HIDDEN_LAUNCH && !this.isNeedUpdate)
     if (!this.IS_HIDDEN_LAUNCH && !this.isNeedUpdate) {
       await this.createWindow()
 
@@ -251,8 +200,7 @@ export const generatedIpcOnContext = {`
   }
 
   public async createWindow() {
-    return new Promise<void>(async resolve => {
-      console.log('createWindow', this.window)
+    return new Promise<void>(resolve => {
       if (this.window) {
         if (this.window.isMinimized()) this.window.restore()
         this.window.focus()
@@ -265,7 +213,6 @@ export const generatedIpcOnContext = {`
         width: this.APP_WIDTH,
         height: this.APP_HEIGHT,
         backgroundColor: '#2F3242',
-        darkTheme: true,
         show: false,
         autoHideMenuBar: true,
         icon: this.ICON,
@@ -298,12 +245,15 @@ export const generatedIpcOnContext = {`
       })
 
       if (app.isPackaged) {
-        await this.window.loadFile(this.PROD_LOAD_FILE_PATH, {
+        this.window.loadFile(this.PROD_LOAD_FILE_PATH, {
           hash: '#',
         })
       } else {
-        await this.window.loadURL(this.DEV_URL + '#')
-        this.window.webContents.openDevTools()
+        this.window.loadURL(`${this.DEV_URL}#`).then(() => {
+          this.window?.webContents.openDevTools({
+            mode: 'bottom',
+          })
+        })
       }
     })
   }

@@ -1,9 +1,8 @@
 import 'reflect-metadata'
 
+import { NestFactory } from '@nestjs/core'
 import { app, dialog } from 'electron'
 import log from 'electron-log'
-
-import { NestFactory } from '@nestjs/core'
 
 import { AppModule } from '@main/modules/app/app.module'
 import { ElectronService } from '@main/modules/electron/electron.service'

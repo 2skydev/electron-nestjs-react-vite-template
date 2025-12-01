@@ -2,18 +2,24 @@ import { Injectable } from '@nestjs/common'
 
 import { ConfigService } from '@main/modules/config/config.service'
 import type { ConfigStoreValues } from '@main/modules/config/config.store'
-import { IPCHandle } from '@main/modules/electron/decorators/ipc-handle.decorator'
+import { IPCHandler } from '@main/modules/electron/decorators/ipc-handler.decorator'
 
 @Injectable()
 export class ConfigController {
   constructor(private readonly configService: ConfigService) {}
 
-  @IPCHandle()
+  /**
+   * 설정 값을 가져옵니다.
+   */
+  @IPCHandler()
   public getConfig() {
     return this.configService.getAll()
   }
 
-  @IPCHandle()
+  /**
+   * 설정 값을 저장합니다.
+   */
+  @IPCHandler()
   public setConfig(config: ConfigStoreValues) {
     return this.configService.setAll(config)
   }
