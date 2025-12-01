@@ -1,6 +1,6 @@
 {
   "name": "electron-nestjs-react-vite-template",
-  "version": "1.0.0",
+  "version": "0.1.2",
   "description": "electron + react + nestjs + vite template",
   "main": "./out/main/index.js",
   "license": "MIT",
