@@ -1,5 +1,5 @@
 @theme inline {
-  --corner-smoothing-size-system-ui: 'system-ui';
+  --corner-smoothing-size-system-ui: system-ui;
   --corner-smoothing-size-none: 0%;
   --corner-smoothing-size-sm: 30%;
   --corner-smoothing-size-md: 60%;
