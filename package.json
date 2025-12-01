@@ -50,7 +50,7 @@
     "electron-builder": "^26.0.12",
     "electron-vite": "^4.0.1",
     "lucide-react": "^0.555.0",
-    "radix-ui": "latest",
+    "radix-ui": "^1.4.3",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-hook-form": "^7.67.0",
