@@ -48,7 +48,6 @@ export class UpdateService implements OnModuleInit {
 
   onModuleInit() {
     this.controller = this.moduleRef.get(UpdateController)
-    this.openUpdateLoadingWindow()
   }
 
   // execute by `src/main/index.ts`

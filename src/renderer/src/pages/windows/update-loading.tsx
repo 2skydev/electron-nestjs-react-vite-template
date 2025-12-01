@@ -17,7 +17,7 @@ const UpdateLoadingPage = () => {
     keyPrefix: 'renderer.updateLoading',
   })
 
-  const [percent, setPercent] = useState(24)
+  const [percent, setPercent] = useState(0)
   const [text, setText] = useState(t('loading'))
 
   const { data: status, mutate } = useSWR('update-status', window.electron.getUpdateStatus)
