@@ -1,7 +1,13 @@
 import { Outlet } from 'react-router-dom'
 
+import { ThemeProvider } from '@renderer/components/common/ThemeProvider'
+
 const App = () => {
-  return <Outlet />
+  return (
+    <ThemeProvider>
+      <Outlet />
+    </ThemeProvider>
+  )
 }
 
 export default App
