@@ -47,6 +47,21 @@ export function ThemeProvider({
     root.classList.add(theme)
   }, [theme])
 
+  // listen to the storage event to update the theme when the theme is changed in another window
+  useEffect(() => {
+    const handleStorageEvent = (event: StorageEvent) => {
+      if (event.key === storageKey) {
+        setTheme(event.newValue as Theme)
+      }
+    }
+
+    window.addEventListener('storage', handleStorageEvent)
+
+    return () => {
+      window.removeEventListener('storage', handleStorageEvent)
+    }
+  }, [storageKey])
+
   const value = {
     theme,
     setTheme: (theme: Theme) => {

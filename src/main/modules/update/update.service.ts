@@ -48,6 +48,7 @@ export class UpdateService implements OnModuleInit {
 
   onModuleInit() {
     this.controller = this.moduleRef.get(UpdateController)
+    this.openUpdateLoadingWindow()
   }
 
   // execute by `src/main/index.ts`
@@ -89,15 +90,13 @@ export class UpdateService implements OnModuleInit {
 
   async openUpdateLoadingWindow() {
     this.updateLoadingWindow = new BrowserWindow({
-      width: 300,
-      height: 300,
-      backgroundColor: '#2F3242',
-      darkTheme: true,
+      width: 380,
+      height: 154,
       show: false,
-      autoHideMenuBar: true,
-      frame: false,
       icon: this.electronService.ICON,
+      frame: false,
       resizable: false,
+      transparent: true,
       webPreferences: {
         preload: this.electronService.PRELOAD_PATH,
       },

@@ -36,7 +36,6 @@ import {
   generateIPCInvokeContextPreloadFileText,
   generateIPCOnContextPreloadFileText,
 } from '@main/modules/electron/utils/generate-preload.utils'
-import { execPromise } from '@main/utils/shell.utils'
 
 @Injectable()
 export class ElectronService implements OnModuleInit, OnApplicationBootstrap {
@@ -173,7 +172,6 @@ export class ElectronService implements OnModuleInit, OnApplicationBootstrap {
     const text = generateIPCInvokeContextPreloadFileText()
 
     await writeFile(path, text)
-    await execPromise(`pnpm exec biome check --write ${path}`)
   }
 
   public async generateIpcOnContextPreloadFile() {
@@ -183,7 +181,6 @@ export class ElectronService implements OnModuleInit, OnApplicationBootstrap {
     const text = generateIPCOnContextPreloadFileText()
 
     await writeFile(path, text)
-    await execPromise(`pnpm exec biome check --write ${path}`)
   }
 
   // execute by `src/main/index.ts`
@@ -216,7 +213,6 @@ export class ElectronService implements OnModuleInit, OnApplicationBootstrap {
         width: this.APP_WIDTH,
         height: this.APP_HEIGHT,
         backgroundColor: '#2F3242',
-        darkTheme: true,
         show: false,
         autoHideMenuBar: true,
         icon: this.ICON,
@@ -254,7 +250,9 @@ export class ElectronService implements OnModuleInit, OnApplicationBootstrap {
         })
       } else {
         this.window.loadURL(`${this.DEV_URL}#`).then(() => {
-          this.window?.webContents.openDevTools()
+          this.window?.webContents.openDevTools({
+            mode: 'bottom',
+          })
         })
       }
     })

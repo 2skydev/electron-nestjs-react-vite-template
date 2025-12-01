@@ -28,9 +28,9 @@ const generateCommonText = (map: Map<string, IPCSenderMetadata | IPCHandlerMetad
   const controllers = groupBy([...map.values()], item => item.target.name as string)
 
   let result = ''
-  let importText = `import { ipcRenderer } from 'electron';`
-  let methodsTypeText = '// prettier-ignore\ntype Methods ='
-  let channelNamesText = 'const channelNames = ['
+  let importText = `import { ipcRenderer } from 'electron';\n\n`
+  let methodsTypeText = 'type Methods ='
+  let channelNamesText = 'const channelNames = [\n'
 
   const entries = Object.entries(controllers)
 
@@ -43,7 +43,7 @@ const generateCommonText = (map: Map<string, IPCSenderMetadata | IPCHandlerMetad
 
     items.forEach(item => {
       methodsTypeText += `\n    | '${item.handler.name}'`
-      channelNamesText += `'${item.handler.name}',`
+      channelNamesText += `  '${item.handler.name}',\n`
     })
 
     methodsTypeText += `\n  >${isLast ? '' : ' &'}`
@@ -61,18 +61,18 @@ export const generateIPCInvokeContextPreloadFileText = () => {
   let result = generateCommonText(IPCHandlerMap)
 
   result += `
-    type GeneratedIpcInvokeContext = {
-      [key in keyof Methods]: (...args: Parameters<Methods[key]>) => Promise<ReturnType<Methods[key]>>
-    }
+type GeneratedIpcInvokeContext = {
+  [key in keyof Methods]: (...args: Parameters<Methods[key]>) => Promise<ReturnType<Methods[key]>>
+}
 
-    export const generatedIpcInvokeContext: GeneratedIpcInvokeContext = channelNames.reduce(
-      (acc, channelName) => {
-        acc[channelName] = (...args: any[]) => ipcRenderer.invoke(channelName, ...args)
-        return acc
-      },
-      {} as GeneratedIpcInvokeContext,
-    )
-  `
+export const generatedIpcInvokeContext: GeneratedIpcInvokeContext = channelNames.reduce(
+  (acc, channelName) => {
+    acc[channelName] = (...args: any[]) => ipcRenderer.invoke(channelName, ...args)
+    return acc
+  },
+  {} as GeneratedIpcInvokeContext,
+)
+`
 
   return result
 }
@@ -81,27 +81,27 @@ export const generateIPCOnContextPreloadFileText = () => {
   let result = generateCommonText(IPCSenderMap)
 
   result += `
-    type Unsubscribe = () => void
+type Unsubscribe = () => void
 
-    type GeneratedIpcOnContext = {
-      [key in keyof Methods]: (
-        callback: (data: ReturnType<Methods[key]>) => void,
-      ) => Unsubscribe
+type GeneratedIpcOnContext = {
+  [key in keyof Methods]: (
+    callback: (data: ReturnType<Methods[key]>) => void,
+  ) => Unsubscribe
+}
+
+export const generatedIpcOnContext: GeneratedIpcOnContext = channelNames.reduce(
+  (acc, channelName) => {
+    acc[channelName] = (callback: (data: any) => void): Unsubscribe => {
+      const handler = (_: any, data: any[]) => callback(data)
+      ipcRenderer.on(channelName, handler)
+      return () => ipcRenderer.off(channelName, handler)
     }
 
-    export const generatedIpcOnContext: GeneratedIpcOnContext = channelNames.reduce(
-      (acc, channelName) => {
-        acc[channelName] = (callback: (data: any) => void): Unsubscribe => {
-          const handler = (_: any, data: any[]) => callback(data)
-          ipcRenderer.on(channelName, handler)
-          return () => ipcRenderer.off(channelName, handler)
-        }
-
-        return acc
-      },
-      {} as GeneratedIpcOnContext,
-    )
-  `
+    return acc
+  },
+  {} as GeneratedIpcOnContext,
+)
+`
 
   return result
 }
