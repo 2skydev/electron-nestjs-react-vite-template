@@ -1,4 +1,4 @@
-import Versions from '@renderer/components/Versions'
+import Versions from '@renderer/components/common/Versions'
 
 const HomePage = () => {
   return (

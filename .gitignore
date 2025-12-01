@@ -9,3 +9,4 @@ chrome_data
 out
 release
 .env
+electron.vite.config.*.mjs

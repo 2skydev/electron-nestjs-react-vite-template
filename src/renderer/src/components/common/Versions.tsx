@@ -1,6 +1,6 @@
 import useSWR from 'swr'
 
-function Versions(): React.JSX.Element {
+const Versions = () => {
   const { data: versions } = useSWR('versions', window.electron.getVersions)
 
   return (

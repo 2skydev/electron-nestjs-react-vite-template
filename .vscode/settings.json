@@ -35,5 +35,22 @@
       "fileMatch": ["/*electron-builder.json"],
       "url": "https://json.schemastore.org/electron-builder"
     }
+  ],
+  "tailwindCSS.classAttributes": [
+    "class",
+    "className",
+    ".*ClassName",
+    ".*[s|S]tyles?",
+    ".*[s|S]tyles?: .*",
+  ],
+  "tailwindCSS.classFunctions": ["cva", "cn"],
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
+  "editor.quickSuggestions": {
+    "strings": "on"
+  },
+  "cSpell.words": [
+    "shadcn"
   ]
 }
