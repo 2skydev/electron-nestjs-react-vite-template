@@ -3,6 +3,18 @@
   "files": {
     "includes": ["src/**/*", "!src/preload/generated-*", "electron.vite.config.ts"]
   },
+  "overrides": [
+    {
+      "includes": ["src/main/**/*.ts"],
+      "linter": {
+        "rules": {
+          "style": {
+            "useImportType": "off"
+          }
+        }
+      }
+    }
+  ],
   "formatter": {
     "enabled": true,
     "indentStyle": "space",
