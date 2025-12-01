@@ -1,9 +1,8 @@
+import i18next from 'i18next'
 import ReactDOM from 'react-dom/client'
 import { initReactI18next } from 'react-i18next'
 
-import i18next from 'i18next'
-
-import FileSystemRouter from '@renderer/components/FileSystemRouter/FileSystemRouter'
+import FileSystemRouter from '@renderer/components/core/FileSystemRouter'
 
 const currentResource = await window.electron.getCurrentI18nextResource()
 

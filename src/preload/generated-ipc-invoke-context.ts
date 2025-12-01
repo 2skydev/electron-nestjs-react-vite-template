@@ -1,11 +1,11 @@
-import { ipcRenderer } from 'electron'
+import { ipcRenderer } from 'electron';
 
-import type { ConfigController } from '@main/modules/config/config.controller'
-import type { DeveloperController } from '@main/modules/developer/developer.controller'
-import type { ElectronController } from '@main/modules/electron/electron.controller'
-import type { UpdateController } from '@main/modules/update/update.controller'
+import type { ConfigController } from '@main/modules/config/config.controller';
+import type { DeveloperController } from '@main/modules/developer/developer.controller';
+import type { ElectronController } from '@main/modules/electron/electron.controller';
+import type { UpdateController } from '@main/modules/update/update.controller';
 
-// prettier-ignore
+
 type Methods =
   Pick<
     ConfigController,
@@ -52,6 +52,7 @@ const channelNames = [
   'checkForUpdate',
   'quitAndInstall',
 ]
+
 
 type GeneratedIpcInvokeContext = {
   [key in keyof Methods]: (...args: Parameters<Methods[key]>) => Promise<ReturnType<Methods[key]>>

@@ -1,5 +1,5 @@
 import { Fragment } from 'react'
-import { RouteObject, RouterProvider, createHashRouter } from 'react-router-dom'
+import { createHashRouter, type RouteObject, RouterProvider } from 'react-router-dom'
 
 type Element = () => React.JSX.Element
 
@@ -7,21 +7,20 @@ interface Module {
   default: Element
 }
 
-export interface ErrorFallbackProps {}
-
 const PRESERVED = import.meta.glob<Module>('/src/pages/(_app|_error).tsx', { eager: true })
 const ROUTES = import.meta.glob<Module>('/src/pages/**/[a-z[]*.tsx')
 
 const preservedRoutes: Partial<Record<string, Element>> = Object.keys(PRESERVED).reduce(
   (routes, key) => {
     const path = key.replace(/\/src\/pages\/|\.tsx$/g, '')
-    return { ...routes, [path]: PRESERVED[key]?.default }
+    routes[path] = PRESERVED[key]?.default
+    return routes
   },
   {},
-)
+) satisfies Partial<Record<string, Element>>
 
-const App = preservedRoutes?.['_app'] || Fragment
-const ErrorFallback = preservedRoutes?.['_error'] || Fragment
+const App = preservedRoutes?._app || Fragment
+const ErrorFallback = preservedRoutes?._error || Fragment
 
 const router = createHashRouter([
   {

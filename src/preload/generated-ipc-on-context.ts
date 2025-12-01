@@ -1,9 +1,9 @@
-import { ipcRenderer } from 'electron'
+import { ipcRenderer } from 'electron';
 
-import type { ElectronController } from '@main/modules/electron/electron.controller'
-import type { UpdateController } from '@main/modules/update/update.controller'
+import type { ElectronController } from '@main/modules/electron/electron.controller';
+import type { UpdateController } from '@main/modules/update/update.controller';
 
-// prettier-ignore
+
 type Methods =
   Pick<
     ElectronController,
@@ -23,10 +23,13 @@ const channelNames = [
   'onChangeUpdateStatus',
 ]
 
+
 type Unsubscribe = () => void
 
 type GeneratedIpcOnContext = {
-  [key in keyof Methods]: (callback: (data: ReturnType<Methods[key]>) => void) => Unsubscribe
+  [key in keyof Methods]: (
+    callback: (data: ReturnType<Methods[key]>) => void,
+  ) => Unsubscribe
 }
 
 export const generatedIpcOnContext: GeneratedIpcOnContext = channelNames.reduce(

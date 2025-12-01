@@ -1,21 +1,20 @@
+import { readdir, readFile, writeFile } from 'node:fs/promises'
+import { join } from 'node:path'
+import { Injectable, type OnApplicationBootstrap, type OnModuleInit } from '@nestjs/common'
+import { ModuleRef } from '@nestjs/core'
+import AutoLaunch from 'auto-launch'
 import {
   app,
   BrowserWindow,
   ipcMain,
   Menu,
-  MenuItemConstructorOptions,
+  type MenuItemConstructorOptions,
   nativeImage,
   shell,
   Tray,
 } from 'electron'
-
-import { Injectable, OnApplicationBootstrap, OnModuleInit } from '@nestjs/common'
-import { ModuleRef } from '@nestjs/core'
-import AutoLaunch from 'auto-launch'
-import { writeFile, readdir, readFile } from 'fs/promises'
 import i18next from 'i18next'
 import { parse as jsoncParse } from 'jsonc-parser'
-import { join } from 'path'
 import { match } from 'path-to-regexp'
 
 import { productName, protocols } from '@main/../../electron-builder.json'
@@ -31,13 +30,12 @@ import {
 } from '@main/modules/electron/electron.constants'
 import { ElectronController } from '@main/modules/electron/electron.controller'
 import { electronStore } from '@main/modules/electron/electron.store'
-import { AppControlAction } from '@main/modules/electron/types/app-control.type'
-import { LanguageOption } from '@main/modules/electron/types/language.type'
+import type { AppControlAction } from '@main/modules/electron/types/app-control.type'
+import type { LanguageOption } from '@main/modules/electron/types/language.type'
 import {
   generateIPCInvokeContextPreloadFileText,
   generateIPCOnContextPreloadFileText,
 } from '@main/modules/electron/utils/generate-preload.utils'
-import { execPromise } from '@main/utils/shell.utils'
 
 @Injectable()
 export class ElectronService implements OnModuleInit, OnApplicationBootstrap {
@@ -46,7 +44,7 @@ export class ElectronService implements OnModuleInit, OnApplicationBootstrap {
   public readonly APP_PATH = app.getAppPath()
   public readonly PROTOCOL = protocols.name
   public readonly IS_MAC = process.platform === 'darwin'
-  public readonly DEV_URL = process.env['ELECTRON_RENDERER_URL']
+  public readonly DEV_URL = process.env.ELECTRON_RENDERER_URL
   public readonly PROD_LOAD_FILE_PATH = join(this.APP_PATH, 'out/renderer/index.html')
   public readonly PRELOAD_PATH = join(this.APP_PATH, 'out/preload/index.js')
   public readonly RESOURCES_PATH = app.isPackaged
@@ -152,7 +150,7 @@ export class ElectronService implements OnModuleInit, OnApplicationBootstrap {
 
       const originalHandler = handler
 
-      const newHandler = function (...args: any[]) {
+      const newHandler = function ipcSenderHandler(...args: any[]) {
         const result = originalHandler.apply(instance, args)
 
         windows.forEach(({ propertyName, instance }) => {
@@ -174,7 +172,6 @@ export class ElectronService implements OnModuleInit, OnApplicationBootstrap {
     const text = generateIPCInvokeContextPreloadFileText()
 
     await writeFile(path, text)
-    await execPromise(`pnpm exec prettier --write ${path}`)
   }
 
   public async generateIpcOnContextPreloadFile() {
@@ -184,7 +181,6 @@ export class ElectronService implements OnModuleInit, OnApplicationBootstrap {
     const text = generateIPCOnContextPreloadFileText()
 
     await writeFile(path, text)
-    await execPromise(`pnpm exec prettier --write ${path}`)
   }
 
   // execute by `src/main/index.ts`
@@ -204,7 +200,7 @@ export class ElectronService implements OnModuleInit, OnApplicationBootstrap {
   }
 
   public async createWindow() {
-    return new Promise<void>(async resolve => {
+    return new Promise<void>(resolve => {
       if (this.window) {
         if (this.window.isMinimized()) this.window.restore()
         this.window.focus()
@@ -217,7 +213,6 @@ export class ElectronService implements OnModuleInit, OnApplicationBootstrap {
         width: this.APP_WIDTH,
         height: this.APP_HEIGHT,
         backgroundColor: '#2F3242',
-        darkTheme: true,
         show: false,
         autoHideMenuBar: true,
         icon: this.ICON,
@@ -250,12 +245,15 @@ export class ElectronService implements OnModuleInit, OnApplicationBootstrap {
       })
 
       if (app.isPackaged) {
-        await this.window.loadFile(this.PROD_LOAD_FILE_PATH, {
+        this.window.loadFile(this.PROD_LOAD_FILE_PATH, {
           hash: '#',
         })
       } else {
-        await this.window.loadURL(this.DEV_URL + '#')
-        this.window.webContents.openDevTools()
+        this.window.loadURL(`${this.DEV_URL}#`).then(() => {
+          this.window?.webContents.openDevTools({
+            mode: 'bottom',
+          })
+        })
       }
     })
   }

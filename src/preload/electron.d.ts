@@ -1,6 +1,6 @@
-import type { ElectronContext } from './index'
+import type { ElectronContext as ElectronContextType } from './index'
 
-export type ElectronContext = ElectronContext
+export type ElectronContext = ElectronContextType
 
 declare global {
   interface Window {

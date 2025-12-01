@@ -1,6 +1,5 @@
-import { app } from 'electron'
-
 import { Injectable } from '@nestjs/common'
+import { app } from 'electron'
 import i18next from 'i18next'
 
 import type { ConfigStoreValues } from '@main/modules/config/config.store'

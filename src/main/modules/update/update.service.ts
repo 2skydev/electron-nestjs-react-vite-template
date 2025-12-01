@@ -1,32 +1,31 @@
-import { BrowserWindow, app } from 'electron'
+import { Injectable, type OnModuleInit } from '@nestjs/common'
+import { ModuleRef } from '@nestjs/core'
+import { app, BrowserWindow } from 'electron'
 import log from 'electron-log'
 import { autoUpdater } from 'electron-updater'
-
-import { Injectable, OnModuleInit } from '@nestjs/common'
-import { ModuleRef } from '@nestjs/core'
 
 import { ExecuteLog } from '@main/decorators/execute-log.decorator'
 import { AppWindow } from '@main/modules/electron/decorators/app-window.decorator'
 import { ElectronService } from '@main/modules/electron/electron.service'
-import { UpdateStatus, UpdateStatusEvent } from '@main/modules/update/types/update-status.type'
+import type { UpdateStatus, UpdateStatusEvent } from '@main/modules/update/types/update-status.type'
 import { UPDATE_LOADING_WINDOW_KEY } from '@main/modules/update/update.constants'
 import { UpdateController } from '@main/modules/update/update.controller'
 
+const LISTEN_EVENTS = [
+  'checking-for-update',
+  'update-available',
+  'update-not-available',
+  'download-progress',
+  'update-downloaded',
+  'error',
+] as const
+
 @Injectable()
 export class UpdateService implements OnModuleInit {
-  private listenEvents = [
-    'checking-for-update',
-    'update-available',
-    'update-not-available',
-    'download-progress',
-    'update-downloaded',
-    'error',
-  ] as const
-
   public status: UpdateStatus = {
     event: 'checking-for-update',
     data: null,
-    time: new Date().getTime(),
+    time: Date.now(),
   }
 
   @AppWindow(UPDATE_LOADING_WINDOW_KEY)
@@ -42,7 +41,7 @@ export class UpdateService implements OnModuleInit {
     autoUpdater.autoInstallOnAppQuit = true
     autoUpdater.disableWebInstaller = true
 
-    this.listenEvents.forEach(event => {
+    LISTEN_EVENTS.forEach(event => {
       autoUpdater.on(event, this.handleUpdateEvent(event))
     })
   }
@@ -54,7 +53,7 @@ export class UpdateService implements OnModuleInit {
   // execute by `src/main/index.ts`
   @ExecuteLog()
   async autoUpdate() {
-    return new Promise<boolean>(async resolve => {
+    return new Promise<boolean>(resolve => {
       const stopAutoUpdate = () => {
         autoUpdater.off('update-available', handleUpdateAvailable)
         autoUpdater.off('update-not-available', handleUpdateNotAvailable)
@@ -65,7 +64,7 @@ export class UpdateService implements OnModuleInit {
       const handleUpdateAvailable = async () => {
         if (!this.electronService.IS_HIDDEN_LAUNCH) {
           this.electronService.isNeedUpdate = true
-          await this.openUpdateLoadingWindow()
+          this.openUpdateLoadingWindow()
         }
       }
 
@@ -82,22 +81,21 @@ export class UpdateService implements OnModuleInit {
       autoUpdater.on('update-not-available', handleUpdateNotAvailable)
       autoUpdater.on('update-downloaded', handleUpdateDownloaded)
 
-      const result = await autoUpdater.checkForUpdates()
-      if (!result) stopAutoUpdate()
+      autoUpdater.checkForUpdates().then(result => {
+        if (!result) stopAutoUpdate()
+      })
     })
   }
 
   async openUpdateLoadingWindow() {
     this.updateLoadingWindow = new BrowserWindow({
-      width: 300,
-      height: 300,
-      backgroundColor: '#2F3242',
-      darkTheme: true,
+      width: 380,
+      height: 154,
       show: false,
-      autoHideMenuBar: true,
-      frame: false,
       icon: this.electronService.ICON,
+      frame: false,
       resizable: false,
+      transparent: true,
       webPreferences: {
         preload: this.electronService.PRELOAD_PATH,
       },
@@ -113,7 +111,7 @@ export class UpdateService implements OnModuleInit {
       })
     } else {
       await this.updateLoadingWindow.loadURL(
-        this.electronService.DEV_URL + '#/windows/update-loading',
+        `${this.electronService.DEV_URL}#/windows/update-loading`,
       )
     }
   }
@@ -123,7 +121,7 @@ export class UpdateService implements OnModuleInit {
       this.status = {
         event,
         data,
-        time: new Date().getTime(),
+        time: Date.now(),
       }
 
       this.controller.onChangeUpdateStatus(this.status)

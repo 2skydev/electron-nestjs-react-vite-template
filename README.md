@@ -4,9 +4,7 @@
 
 Electron starter kit with multiple features
 
-![image](https://github.com/2skydev/electron-nestjs-react-vite-template/assets/43225384/5b717dd7-24e1-4a86-8df7-b1d93a986d46)
-
-![image](https://github.com/2skydev/electron-nestjs-react-vite-template/assets/43225384/47cb748a-52de-4e93-89b1-90a92b455e24)
+<img width="708" height="379" alt="electron-update" src="https://github.com/user-attachments/assets/c7e40cdb-1e94-4e2c-957c-c3f00ff73152" />
 
 <br/>
 
@@ -38,9 +36,14 @@ Electron starter kit with multiple features
 - Bundle tool: [`vite`](https://vitejs.dev/) + [`electron-vite`](https://electron-vite.org/)
 - Main process framework: [`nestjs`](https://nestjs.com/)
 - Renderer process framework: [`react`](https://react.dev/) + [`typescript`](https://www.typescriptlang.org/)
-- Code style: `eslint` + `prettier` + [`@trivago/prettier-plugin-sort-imports`](https://github.com/trivago/prettier-plugin-sort-imports)
-- File system based router: [`react-router-dom v6`](https://reactrouter.com/docs/en/v6) + custom (src/components/FileSystemRoutes)
+- Code style: [`@biomejs/biome`](https://biomejs.dev/)
+- UI components: [`shadcn/ui`](https://ui.shadcn.com/) + [`radix-ui`](https://www.radix-ui.com/)
+- Styling: [`tailwindcss`](https://tailwindcss.com/)
+- File system based router: [`react-router-dom v7`](https://reactrouter.com/docs/en/v7) + custom (src/components/core/FileSystemRoutes)
+- Form handling: [`react-hook-form`](https://react-hook-form.com/) + [`zod`](https://zod.dev/)
+- Data fetching: [`swr`](https://swr.vercel.app/)
 - i18n: [`i18next`](https://www.i18next.com/) + [`react-i18next`](https://react.i18next.com/)
+- Utility library: [`es-toolkit`](https://es-toolkit.slash.page/)
 
 <br/>
 

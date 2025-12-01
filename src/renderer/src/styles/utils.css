@@ -1,0 +1,12 @@
+@theme inline {
+  --corner-smoothing-size-system-ui: system-ui;
+  --corner-smoothing-size-none: 0%;
+  --corner-smoothing-size-sm: 30%;
+  --corner-smoothing-size-md: 60%;
+  --corner-smoothing-size-full: 100%;
+}
+
+@utility corner-smoothing-* {
+  /* biome-ignore lint/correctness/noUnknownProperty: electron-corner-smoothing is a custom property */
+  -electron-corner-smoothing: --value(--corner-smoothing-size-*, [percentage]);
+}
