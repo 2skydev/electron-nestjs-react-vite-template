@@ -1,0 +1,16 @@
+# 모든 텍스트 파일의 줄바꿈을 LF로 강제
+* text=auto eol=lf
+
+# 바이너리 파일은 변경하지 않음
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.mov binary
+*.mp4 binary
+*.mp3 binary
+*.zip binary
+*.gz binary
+*.dmg binary
+*.asar binary
