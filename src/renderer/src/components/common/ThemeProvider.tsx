@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 
 type Theme = 'dark' | 'light' | 'system'
+type CalculatedTheme = Extract<Theme, 'dark' | 'light'>
 
 type ThemeProviderProps = {
   children: React.ReactNode
@@ -10,15 +11,11 @@ type ThemeProviderProps = {
 
 type ThemeProviderState = {
   theme: Theme
+  calculatedTheme: CalculatedTheme
   setTheme: (theme: Theme) => void
 }
 
-const initialState: ThemeProviderState = {
-  theme: 'system',
-  setTheme: () => null,
-}
-
-const ThemeProviderContext = createContext<ThemeProviderState>(initialState)
+const ThemeProviderContext = createContext<ThemeProviderState | null>(null)
 
 export function ThemeProvider({
   children,
@@ -30,21 +27,42 @@ export function ThemeProvider({
     () => (localStorage.getItem(storageKey) as Theme) || defaultTheme,
   )
 
-  useEffect(() => {
-    const root = window.document.documentElement
-
-    root.classList.remove('light', 'dark')
-
-    if (theme === 'system') {
-      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
+  const [calculatedTheme, setCalculatedTheme] = useState<CalculatedTheme>(() =>
+    theme === 'system'
+      ? window.matchMedia('(prefers-color-scheme: dark)').matches
         ? 'dark'
         : 'light'
+      : theme,
+  )
 
-      root.classList.add(systemTheme)
-      return
+  const setThemeClass = (newTheme: Extract<Theme, 'dark' | 'light'>) => {
+    const root = window.document.documentElement
+    root.classList.remove('light', 'dark')
+    root.classList.add(newTheme)
+    setCalculatedTheme(newTheme)
+  }
+
+  useEffect(() => {
+    if (theme === 'system') {
+      const mediaQueryList = window.matchMedia('(prefers-color-scheme: dark)')
+
+      setThemeClass(mediaQueryList.matches ? 'dark' : 'light')
+
+      const handleMediaQueryChange = (event: MediaQueryListEvent) => {
+        const newTheme = event.matches ? 'dark' : 'light'
+        setThemeClass(newTheme)
+      }
+
+      mediaQueryList.addEventListener('change', handleMediaQueryChange)
+
+      return () => {
+        mediaQueryList.removeEventListener('change', handleMediaQueryChange)
+      }
     }
 
-    root.classList.add(theme)
+    setThemeClass(theme)
+
+    return () => {}
   }, [theme])
 
   // listen to the storage event to update the theme when the theme is changed in another window
@@ -64,6 +82,7 @@ export function ThemeProvider({
 
   const value = {
     theme,
+    calculatedTheme,
     setTheme: (theme: Theme) => {
       localStorage.setItem(storageKey, theme)
       setTheme(theme)
@@ -80,7 +99,7 @@ export function ThemeProvider({
 export const useTheme = () => {
   const context = useContext(ThemeProviderContext)
 
-  if (context === undefined) throw new Error('useTheme must be used within a ThemeProvider')
+  if (context === null) throw new Error('useTheme must be used within a ThemeProvider')
 
   return context
 }
