@@ -37,7 +37,7 @@ Electron starter kit with multiple features
 - Main process framework: [`nestjs`](https://nestjs.com/)
 - Renderer process framework: [`react`](https://react.dev/) + [`typescript`](https://www.typescriptlang.org/)
 - Code style: [`@biomejs/biome`](https://biomejs.dev/)
-- UI components: [`shadcn/ui`](https://ui.shadcn.com/) + [`radix-ui`](https://www.radix-ui.com/)
+- UI components: [`shadcn/ui`](https://ui.shadcn.com/) + [`base-ui`](https://base-ui.com/)
 - Styling: [`tailwindcss`](https://tailwindcss.com/)
 - File system based router: [`react-router-dom v7`](https://reactrouter.com/docs/en/v7) + custom (src/components/core/FileSystemRoutes)
 - Form handling: [`react-hook-form`](https://react-hook-form.com/) + [`zod`](https://zod.dev/)
